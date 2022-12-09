@@ -1,40 +1,40 @@
-#include "include.h"
-using namespace offsets;
+#include <iostream>
+#include <Windows.h>
+using namespace std;
 
-BOOL WINAPI Bunnyhop(HMODULE createModule)
+void Space()
 {
-	DWORD gameModule = (DWORD)GetModuleHandle("client.dll");
-	while (!GetAsyncKeyState(VK_END))
-	{
-		DWORD localPlayer = *(DWORD*)(gameModule + dwLocalPlayer);
-		if (localPlayer == NULL) continue;
-
-		int flag = *(int*)(localPlayer + m_fFlags);
-
-		if (GetAsyncKeyState(VK_SPACE) && flag & (1 << 0))
-		{
-			*(DWORD*)(gameModule + dwForceJump) = 6;
-		}
-	}
-
-
-	FreeLibraryAndExitThread(createModule, 0);
-	return 0;
+	INPUT input;
+	WORD vKey = VK_SPACE;
+	input.type = INPUT_KEYBOARD;
+	input.ki.wScan = MapVirtualKey(vKey, MAPVK_VK_TO_VSC);
+	input.ki.wVk = vKey;
+	SendInput(1, &input, sizeof(INPUT));
+	input.ki.dwFlags = KEYEVENTF_KEYUP;
+	SendInput(1, &input, sizeof(INPUT)); 
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule,
-	DWORD  ul_reason_for_call,
-	LPVOID lpReserved
-)
+bool bHop = false;
+
+void Bonnyhop()
 {
-	switch (ul_reason_for_call)
+	if (GetAsyncKeyState(VK_SPACE)); // нажми Пробел и станешь прыгать автоматически
 	{
-	case DLL_PROCESS_ATTACH:
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Bunnyhop, 0, 0, 0);
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:
-		break;
+		Sleep(300);
+		bHop = true;
 	}
-	return TRUE;
+	if (GetAsyncKeyState(VK_CONTROL)) // Контрол чтобы остановиться
+	{
+		Sleep(150);
+		bHop = false; 
+	}
+	if (bHop) Space();
+}
+
+int main()
+{
+	while (true) // бесконечный цикл
+	{
+		Bonnyhop();
+	}
 }
