@@ -14,27 +14,27 @@ void Space()
 	SendInput(1, &input, sizeof(INPUT)); 
 }
 
-bool bHop = false;
+bool bhop = false;
 
-void Bonnyhop()
+void Bunnyhop()
 {
 	if (GetAsyncKeyState(VK_SPACE)); // нажми Пробел и станешь прыгать автоматически
 	{
 		Sleep(300);
-		bHop = true;
+		bhop = true;
 	}
 	if (GetAsyncKeyState(VK_CONTROL)) // Контрол чтобы остановиться
 	{
 		Sleep(150);
-		bHop = false; 
+		bhop = false; 
 	}
-	if (bHop) Space();
+	if (bhop) Space();
 }
 
 int main()
 {
 	while (true) // бесконечный цикл
 	{
-		Bonnyhop();
+		Bunnyhop();
 	}
 }
